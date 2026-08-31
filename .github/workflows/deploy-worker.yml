@@ -66,8 +66,8 @@ jobs:
       - name: Auto Patch & s2t for Upstream Build
         if: steps.check.outputs.skip != 'true'
         run: |
-          # 1. 全域/特定檔簡轉繁 (改用 npx 自動調用 opencc)
-          find frontend-dist/js functions -type f -exec npx opencc -i {} -o {} -c s2hk.json \;
+          # 1. 全域/特定檔簡轉繁 (改用 npx 自動調用 opencc) (加上 -f 強制覆蓋原檔)
+          find frontend-dist/js functions -type f -exec npx opencc -i {} -o {} -c s2hk.json -f \;
       
           # 2. 詞彙修補 (sed 批次替換，改用 # 做分隔符避免路徑錯亂)
           find frontend-dist/js functions -type f -exec sed -i 's#簡體中文#正體中文#g; s#圖牀#圖床#g; s#粘貼#貼上#g' {} +
