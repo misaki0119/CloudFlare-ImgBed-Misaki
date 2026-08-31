@@ -67,8 +67,8 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: |
           # 1. 預先安裝 opencc-cli（避免 npx 抓錯套件），並執行簡轉繁
-          npm install opencc-cli
-          find frontend-dist/js -type f -name "*.js" -exec sh -c './node_modules/.bin/opencc-cli -i "$1" -o "$1.tmp" -c s2hk.json && mv "$1.tmp" "$1"' _ {} \;
+          sudo npm install -g opencc-cli
+          find frontend-dist/js -type f -name "*.js" -exec sh -c 'opencc-cli -i "$1" -o "$1.tmp" -c s2hk.json && mv "$1.tmp" "$1"' _ {} \;
       
           # 2. 詞彙修補 (sed 批次替換，改用 # 做分隔符避免路徑錯亂)
           find frontend-dist/js functions -type f -exec sed -i 's#簡體中文#正體中文#g; s#圖牀#圖床#g; s#粘貼#貼上#g' {} +
