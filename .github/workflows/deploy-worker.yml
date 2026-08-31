@@ -67,25 +67,21 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: |
           # 1. 全域/特定檔簡轉繁 (OpenCC)
-          # 檢查 opencc 指令是否存在，不存在才跑 npm install -g opencc-cli
-          command -v opencc >/dev/null 2>&1 || npm install -g opencc-cli
-
-          # 接下來直接調用 opencc (或是使用 npx opencc-cli)
+          command -v opencc >/dev/null 2>&1 || sudo npm install -g opencc-cli
           find frontend-dist/js functions -type f -exec opencc -i {} -o {} -c s2hk.json \;
       
-          # 2. 詞彙修補 (sed 批量替換)
-          # JS/Functions 內的「簡體中文 -> 正體中文」、「圖牀 -> 圖床」
-          find frontend-dist/js functions/api/manage/sysConfig/page.js -type f -exec sed -i 's/簡體中文/正體中文/g; s/圖牀/圖床/g; s/粘貼/貼上/g' {} +
+          # 2. 詞彙修補 (sed 批次替換，改用 # 做分隔符避免路徑錯亂)
+          find frontend-dist/js functions -type f -exec sed -i 's#簡體中文#正體中文#g; s#圖牀#圖床#g; s#粘貼#貼上#g' {} +
       
           # 3. 移除特定 CSS font-family 樣式
-          find frontend-dist/js -type f -exec sed -i 's/font-family:Courier New,Monaco,monospace;//g' {} +
+          find frontend-dist/js -type f -exec sed -i 's#font-family:Courier New,Monaco,monospace;##g' {} +
       
-          # 4. 移除 Title 上的 GitHub 超連結
-          find frontend-dist/js -type f -exec sed -i 's/{class:"main-title",href:"https:\/\/github.com\/MarSeventh\/CloudFlare-ImgBed",target:"_blank"}/{class:"main-title"}/g' {} +
+          # 4. 移除 Title 上的 GitHub 超連結 (改用 @ 作為分隔符，乾淨不報錯)
+          find frontend-dist/js -type f -exec sed -i 's@{class:"main-title",href:"https://github.com/MarSeventh/CloudFlare-ImgBed",target:"_blank"}@{class:"main-title"}@g' {} +
       
           # 5. 修改 HTML Title 與 Logo (Favicon)
-          sed -i 's/<title>.*<\/title>/<title>Misaki Imghub<\/title>/g' frontend-dist/index.html
-          sed -i 's|href="/static/media/logo.png"|href="/static/media/QB.jpg"|g' frontend-dist/index.html
+          sed -i 's#<title>.*</title>#<title>Misaki Imghub</title>#g' frontend-dist/index.html
+          sed -i 's#href="/static/media/logo.png"#href="/static/media/QB.jpg"#g' frontend-dist/index.html
 
       - name: Generate worker routes
         if: steps.check.outputs.skip != 'true'
