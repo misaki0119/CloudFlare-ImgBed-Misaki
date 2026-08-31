@@ -63,11 +63,25 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: npm ci --workspace=@cloudflare-imgbed/common --workspace=@cloudflare-imgbed/worker --omit=dev
 
+        # 1.1 設定 opencc-cli 的 node_modules 快取
+      - name: Cache OpenCC CLI
+        id: cache-opencc
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-opencc-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-opencc-
+
+      # 1.2 未命中快取才跑 npm install，否則 0 秒跳過
       - name: Auto Patch & s2t for Upstream Build
         if: steps.check.outputs.skip != 'true'
         run: |
-          # 1. 預先安裝 opencc-cli（避免 npx 抓錯套件），並執行簡轉繁
-          npm install opencc-cli
+          if [ "${{ steps.cache-opencc.outputs.cache-hit }}" != 'true' ]; then
+            npm install opencc-cli
+          fi
+
+          # 1 .執行簡轉繁 (使用絕對路徑)
           find frontend-dist/js functions/api/manage/sysConfig/page.js -type f -name "*.js" -exec sh -c '$(pwd)/node_modules/.bin/opencc -i "$1" -o "$1.tmp" -c s2hk.json && mv "$1.tmp" "$1"' _ {} \;
       
           # 2. 詞彙修補 (sed 批次替換，改用 # 做分隔符避免路徑錯亂)
