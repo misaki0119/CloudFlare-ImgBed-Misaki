@@ -66,9 +66,9 @@ jobs:
       - name: Auto Patch & s2t for Upstream Build
         if: steps.check.outputs.skip != 'true'
         run: |
-          # 1. 全域/特定檔簡轉繁 (OpenCC)
-          command -v opencc >/dev/null 2>&1 || sudo npm install -g opencc-cli
-          find frontend-dist/js functions -type f -exec opencc -i {} -o {} -c s2hk.json \;
+          # 1. 全域/特定檔簡轉繁 (OpenCC) - 修正 CLI 可執行檔名稱為 opencc-cli
+          command -v opencc-cli >/dev/null 2>&1 || sudo npm install -g opencc-cli
+          find frontend-dist/js functions -type f -exec opencc-cli -i {} -o {} -c s2hk.json \;
       
           # 2. 詞彙修補 (sed 批次替換，改用 # 做分隔符避免路徑錯亂)
           find frontend-dist/js functions -type f -exec sed -i 's#簡體中文#正體中文#g; s#圖牀#圖床#g; s#粘貼#貼上#g' {} +
