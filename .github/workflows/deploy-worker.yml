@@ -88,7 +88,7 @@ jobs:
           find frontend-dist/js functions/api/manage/sysConfig/page.js  functions -type f -exec sed -i 's#簡體中文#正體中文#g; s#圖牀#圖床#g; s#粘貼#貼上#g' {} +
       
           # 3. 移除特定 CSS font-family 樣式
-          find frontend-dist/js -type f -exec sed -i 's#font-family:Courier New,Monaco,monospace;##g' {} +
+          find frontend-dist/css -type f -exec sed -i 's#font-family:Courier New,Monaco,monospace;##g' {} +
       
           # 4. 移除 Title 上的 GitHub 超連結 (改用 @ 作為分隔符，乾淨不報錯)
           find frontend-dist/js -type f -exec sed -i 's@{class:"main-title",href:"https://github.com/MarSeventh/CloudFlare-ImgBed",target:"_blank"}@{class:"main-title"}@g' {} +
