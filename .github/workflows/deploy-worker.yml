@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - uat
   workflow_dispatch:
     inputs:
       worker_name:
