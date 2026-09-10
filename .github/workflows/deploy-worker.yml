@@ -87,11 +87,11 @@ jobs:
           # 2. 詞彙修補 (sed 批次替換，改用 # 做分隔符避免路徑錯亂)
           # 修正後的 sed 順序（長詞放前面，短詞放後面）
           find frontend-dist/js functions/api/manage/sysConfig/page.js functions -type f -exec sed -i \
-            's#簡體中文#正體中文#g; \
-             s#圖牀#圖床#g; \
-             s#粘貼#貼上#g; \
-             s#退出登錄#登出#g; \
-             s#認證碼#密碼#g; \
+            's#簡體中文#正體中文#g; 
+             s#圖牀#圖床#g; 
+             s#粘貼#貼上#g; 
+             s#退出登錄#登出#g; 
+             s#認證碼#密碼#g; 
              s#登錄#登入#g' {} +
       
           # 3. 移除特定 CSS font-family 樣式
